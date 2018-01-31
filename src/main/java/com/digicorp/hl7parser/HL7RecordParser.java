@@ -9,17 +9,15 @@ PID|||497974^^^ORSC03||SMITH^KALANA^N||19890426|F||B|425 ALMA BYRD LN APT A^^SPA
 package com.digicorp.hl7parser;
 
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author kevin.adesara on 31/01/18.
  */
-public class HL7RecordParser {
+class HL7RecordParser {
     private LinkedHashMap<String, String> data = new LinkedHashMap<>();
     private String subFieldSeparators = "";
 
-    public HL7RecordParser() {
+    HL7RecordParser() {
     }
 
     private String getSubFieldSeparators() {
@@ -74,7 +72,7 @@ public class HL7RecordParser {
         }
 
         for (int i = 0; i < subFields.length; i++) {
-            parseField(fieldKey + "." + (i+1), subFields[i]);
+            parseField(fieldKey + "." + (i + 1), subFields[i]);
         }
     }
 
@@ -120,7 +118,33 @@ public class HL7RecordParser {
         return outputString;
     }
 
+    String get(String key) {
+        print("Finding field for : " + key);
+        if (data.containsKey(key)) {
+            String field = data.get(key);
+            print("Found field for : " + key + " => " + field);
+            return field;
+        }
+
+        print("Not found field for : " + key);
+        String[] keyParts = key.split("\\.");
+        if (keyParts.length > 2) {
+            print("Trying 1 level up...");
+            StringBuilder newKey = new StringBuilder(keyParts[0]);
+            for (int i = 1; i < keyParts.length - 1; i++) {
+                newKey.append(".").append(keyParts[i]);
+            }
+            return get(newKey.toString());
+        }
+
+        return "";
+    }
+
+    private void print(String info) {
+        System.out.println("[" + HL7RecordParser.class.getSimpleName() + "]: " + info);
+    }
+
     void log() {
-        Logger.getGlobal().log(Level.INFO, data.toString());
+        print(data.toString());
     }
 }
