@@ -128,16 +128,16 @@ class HL7RecordParser {
 
         print("Not found field for : " + key);
         String[] keyParts = key.split("\\.");
-        if (keyParts.length > 2) {
-            print("Trying 1 level up...");
-            StringBuilder newKey = new StringBuilder(keyParts[0]);
-            for (int i = 1; i < keyParts.length - 1; i++) {
-                newKey.append(".").append(keyParts[i]);
-            }
-            return get(newKey.toString());
+        if (keyParts.length <= 2) {
+            return "";
         }
 
-        return "";
+        print("Trying 1 level up...");
+        StringBuilder newKey = new StringBuilder(keyParts[0]);
+        for (int i = 1; i < keyParts.length - 1; i++) {
+            newKey.append(".").append(keyParts[i]);
+        }
+        return get(newKey.toString());
     }
 
     private void print(String info) {
